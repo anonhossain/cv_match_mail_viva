@@ -4,6 +4,7 @@ import os
 import shutil
 import google.generativeai as genai
 import PyPDF2 as pdf
+from prompt import *
 #import env
 from dotenv import load_dotenv
 
@@ -45,49 +46,6 @@ class Model:
         
         job_desc = Model.load_job_description(JD_FILE)
         resume_text = Model.extract_text_from_pdf(CV_FILE)
-        
-        def match_prompt(job_desc, resume_text):
-            return f"""
-            Go through the job description and resume and provide a score from 0 to 100 based on how well the resume matches the job description.
-            just provide the score and nothing else.
-
-            Job Description:
-            {job_desc}
-
-            Resume:
-            {resume_text}
-            """ 
-            
-        def skills_suggestion_prompt(job_desc, resume_text):
-            return f"""
-            Go through the job description and resume and provide a list of skills that are missing in the resume but are required for the job.
-            Job Description:
-            {job_desc}
-
-            Resume:
-            {resume_text}
-            """
-        def question_generation_prompt(job_desc, resume_text):
-            return f"""
-            Go through the job description and resume and provide a list of questions that can be asked to the candidate based on the resume and job description.
-
-            Job Description:
-            {job_desc}
-
-            Resume:
-            {resume_text}
-            """
-        
-        def project_suggestion_prompt(job_desc, resume_text):
-            return f"""
-            Go through the job description and resume and provide a list of projects that can be suggested to the candidate based on the resume and job description.
-
-            Job Description:
-            {job_desc}
-
-            Resume:
-            {resume_text}
-            """
         
         # Choose the appropriate prompt function based on the action
         if action == "match":
