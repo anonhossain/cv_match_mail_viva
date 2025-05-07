@@ -1,7 +1,11 @@
+
 def match_prompt(job_desc, resume_text):
     return f"""
-    Compare the job description and the resume and rate the match between them on a scale of 1-100.
-    just give the score and no other explanation.
+    Your task is to match the resume with the job description and provide a score from 0 to 100 based on the match.
+    Just give the score, no other text.
+    Here watch the job description and resume carefully and then give the score.
+    The score should be based on the skills, experience, and projects mentioned in the resume. 
+    See the skills in job description and resume and then give the score.
 
     Job Description:
     {job_desc}
@@ -12,7 +16,13 @@ def match_prompt(job_desc, resume_text):
 
 def skills_suggestion_prompt(job_desc, resume_text):
     return f"""
-     Go through the job description thoroughly. Read that nicely and understand it. Provide the skills that are required for the job.
+    Your task is to provide suggestions for improving the resume based on the job description. 
+    At first go through the job description thoroughly. Read that nicely and understand it and identify the skills required for the job.
+    Then go through the resume of the candidate. Read that nicely and understand it and identify the skills mentioned in the resume.
+    Identify the missing skills.
+    Focus on the skills and experience that are relevant to the job description.
+    Tell how the Skills can be earned or improved.
+    Also highlight prerequisite required for that skills that are not mentioned in the resume.
 
     Job Description:
     {job_desc}
@@ -23,7 +33,15 @@ def skills_suggestion_prompt(job_desc, resume_text):
 
 def question_generation_prompt(job_desc, resume_text):
     return f"""
-    Go through the job description thoroughly. Read that nicely and understand it. Provide 5-10 questions that can be asked to the candidate based on the job description.
+    You are a Highly Expert HR. Your main task is to go through the job description thoroughly. Read that nicely and understand it.
+    Then go through the resume of the candidate. Read that nicely and understand it.
+    Then you have to generate the questions that could be asked based on the skills, job role, previous experience, and projects mentioned in the CV.
+    Also, generate technical questions from CV projects and experience.
+    The questions must be standard and should be related to the job description and the skills mentioned in the CV.
+    Also ask some advance-level questions based on skills and projects which relate to the job description.
+    No need to ask general questions. The total number of questions will be between 10-15.
+    As it is for candidate, also provide the answer to the questions.
+    The answer should be in easy English and should be understandable by the candidate.
 
     Job Description:
     {job_desc}
@@ -45,8 +63,7 @@ def project_suggestion_prompt(job_desc, resume_text):
     Resume:
     {resume_text}
     """
-    
-    
+
 def draft_cover_letter_prompt(job_desc, resume_text):
     return f"""
     You are a Highly Expert HR. Your main task is to go through the job description thoroughly. Read that nicely and understand it.
