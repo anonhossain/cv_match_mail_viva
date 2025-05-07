@@ -41,8 +41,8 @@ class Model:
 
     @staticmethod
     def process_resume(action: str):
-        if action not in ["match", "skills_suggestion", "question_generation", "project_suggestion", ]:
-            return {"error": "Invalid action. Choose 'match', 'skills_suggestion', 'question_generation', 'project_suggestion', "}
+        if action not in ["match", "skills_suggestion", "question_generation", "project_suggestion", "draft_cover_letter", "draft_email"]:
+            return {"error": "Invalid action. Choose 'match', 'skills_suggestion', 'question_generation', 'project_suggestion', 'draft_cover_letter', or 'draft_email'."}
         
         job_desc = Model.load_job_description(JD_FILE)
         resume_text = Model.extract_text_from_pdf(CV_FILE)
@@ -56,5 +56,9 @@ class Model:
             prompt = question_generation_prompt(job_desc, resume_text)
         elif action == "project_suggestion":
             prompt = project_suggestion_prompt(job_desc, resume_text)
+        elif action == "draft_cover_letter":
+            prompt = draft_cover_letter_prompt(job_desc, resume_text)
+        elif action == "draft_email":
+            prompt = draft_email_prompt(job_desc, resume_text)
         response_text = Model.get_gemini_response(prompt)
         return {"result": response_text}
