@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.views import api
+from views import api
 
 app = FastAPI()
 
-#origins = ["http://127.0.0.1:5500/frontend/"]
 # Set up CORS middleware
 app.add_middleware(
     CORSMiddleware,
