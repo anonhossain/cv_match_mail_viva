@@ -2,3 +2,4 @@ fastapi
 uvicorn
 shutils
 python-dotenv
+pymongo
