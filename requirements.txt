@@ -3,3 +3,4 @@ uvicorn
 shutils
 python-dotenv
 pymongo
+pdfplumber

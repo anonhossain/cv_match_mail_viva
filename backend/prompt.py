@@ -91,3 +91,14 @@ def draft_email_prompt(job_desc, resume_text):
     Resume:
     {resume_text}
     """
+
+
+def hr_sort_prompt (HR_job_desc,HR_resume_text):
+    return f"""
+    You are an expert in the field of HR. You have been asked to evaluate a candidate for a job position. The job description and the resume of the candidate are provided below. Your task is to show the percentage match between the job description and CV in one line. Just write the number without using %.
+    Job Description:
+    {HR_job_desc}
+
+    Resume:
+    {HR_resume_text}
+    """
