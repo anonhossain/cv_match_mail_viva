@@ -74,6 +74,17 @@ class Model:
 class ModelHR:
 
     @staticmethod
+    def extract_text_from_pdf(resume_file_path):
+        resume_file_path = os.path.join(resume_file_path, "resume.pdf")
+        with open(resume_file_path, 'rb') as file:
+            reader = pdf.PdfReader(file)
+            text = ""
+            for page in range(len(reader.pages)):
+                page_text = reader.pages[page].extract_text()
+                text += str(page_text)
+        return text
+    
+    @staticmethod
     def get_gemini_response(prompt):
         """Get response from Gemini AI."""
         model = genai.GenerativeModel(MODEL)
@@ -98,7 +109,7 @@ class ModelHR:
         percentage_mapping = {}
         for pdf_file in pdf_files:
             pdf_path = os.path.join(HR_CV_FILES, pdf_file)
-            HR_resume_text = Model.extract_text_from_pdf(pdf_path)
+            HR_resume_text = ModelHR.extract_pdf_text(pdf_path)
             prompt = hr_sort_prompt(HR_job_desc, HR_resume_text)
             response =ModelHR.get_gemini_response(prompt).strip()
 
