@@ -4,3 +4,5 @@ shutils
 python-dotenv
 pymongo
 pdfplumber
+fitz
+docx

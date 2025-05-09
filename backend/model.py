@@ -1,6 +1,8 @@
 
 import os
 import shutil
+from docx import Document
+import fitz
 import google.generativeai as genai
 import PyPDF2 as pdf
 import pdfplumber
@@ -16,6 +18,8 @@ CANDIDATE_JD_FILE = os.getenv('CANDIDATE_JD_FILE')
 
 HR_CV_FILES = os.getenv('HR_CV_FILES')
 HR_JD_FILE = os.getenv('HR_JD_FILE')
+
+OUTPUT_DIRECTORY = os.getenv('OUTPUT_DIRECTORY')
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 MODEL = os.getenv('MODEL')
@@ -72,17 +76,6 @@ class Model:
         return {"result": response_text}
 
 class ModelHR:
-
-    @staticmethod
-    def extract_text_from_pdf(resume_file_path):
-        resume_file_path = os.path.join(resume_file_path, "resume.pdf")
-        with open(resume_file_path, 'rb') as file:
-            reader = pdf.PdfReader(file)
-            text = ""
-            for page in range(len(reader.pages)):
-                page_text = reader.pages[page].extract_text()
-                text += str(page_text)
-        return text
     
     @staticmethod
     def get_gemini_response(prompt):
@@ -121,3 +114,59 @@ class ModelHR:
             percentage_mapping[pdf_file] = percentage
         percentage_mapping = dict(sorted(percentage_mapping.items(), key=lambda item: item[1], reverse=True))
         return percentage_mapping
+    
+    
+class Generate_questions:
+    
+    @staticmethod
+    def get_gemini_response(prompt):
+        model = genai.GenerativeModel(MODEL)
+        response = model.generate_content(prompt)
+        return response.text
+
+    @staticmethod
+    def extract_text_from_pdf(path):
+        with open(path, 'rb') as file:
+            reader = pdf.PdfReader(file)
+            return ''.join([page.extract_text() for page in reader.pages if page.extract_text()])
+
+    @staticmethod
+    def load_job_description(path):
+        
+        with open(path, 'r') as file:
+            return file.read()
+
+    @staticmethod
+    def save_text_as_pdf(text, output_path):
+        doc = fitz.open()
+        page = doc.new_page()
+        page.insert_text((72, 72), text, fontsize=11)
+        doc.save(output_path)
+        doc.close()
+
+    @staticmethod
+    def save_text_as_docx(text, output_path):
+        doc = Document()
+        for line in text.split('\n'):
+            doc.add_paragraph(line)
+        doc.save(output_path)
+
+    @staticmethod
+    def generate_questions():
+        if not os.path.exists(OUTPUT_DIRECTORY):
+            os.makedirs(OUTPUT_DIRECTORY)
+
+        jd_text = Model.load_job_description(HR_JD_FILE)
+
+        for filename in os.listdir(HR_CV_FILES):
+            if filename.lower().endswith('.pdf'):
+                resume_path = os.path.join(HR_CV_FILES, filename)
+                resume_text = Generate_questions.extract_text_from_pdf(resume_path)
+                prompt = generate_questions_prompt (jd_text,resume_text)
+                questions = Generate_questions.get_gemini_response(prompt)
+                # Create filenames
+                base_name = os.path.splitext(filename)[0]
+                docx_output_path = os.path.join(OUTPUT_DIRECTORY, base_name + "_questions.docx")
+                # Save both versions
+                Generate_questions.save_text_as_docx(questions, docx_output_path)
+                print(f"Generated: {base_name}_questions.docx")

@@ -102,3 +102,15 @@ def hr_sort_prompt (HR_job_desc,HR_resume_text):
     Resume:
     {HR_resume_text}
     """
+    
+def generate_questions_prompt (jd_text,resume_text):
+    
+    return f"""
+    You are a Highly Expert HR. Your main task is to go through the job description throughly. Read that nicely and understand that nicely. Then go through the resume of the candidate. Read that nicely and understand that nicely. Then you have to generate the questions that could be asked based on the skills, job role, previous experience, and projects mentioned in the CV. Also, generate technical questions from CV projects and experience. The Question must be of high Standard and should be related to the job role and the skills mentioned in the CV. Also ask some Advance level questions based on Skills and project which relate to the job description. No need to ask general questions. The total number question will be between 10-15
+
+    Job Description:
+    {jd_text}
+
+    Resume:
+    {resume_text}
+    """
