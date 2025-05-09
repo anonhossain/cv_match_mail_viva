@@ -2,5 +2,5 @@
 import pymongo
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client["CVProject"]
-collection = db["registration"]
+db = client["project_cv"]
+collection = db["users"]
