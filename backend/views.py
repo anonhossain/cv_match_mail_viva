@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, File, Form, UploadFile
 import os
 from fastapi.responses import JSONResponse
+from resume_extractor import ResumeExtractor
 from model import Generate_questions, Model, ModelHR
 from files_uploader import save_candidate_files, save_hr_files
 
@@ -32,3 +33,9 @@ async def process_HR_resume_sort():
 @api.post("/process_HR_resume_generate_question")
 async def process_HR_resume_generate_question():
     return Generate_questions.generate_questions()
+
+@api.post("/extract_resume_info/")
+async def get_resume_info(fileNames: List[str]):
+    result = ResumeExtractor.extract_resume_info(fileNames)
+    return result
+
