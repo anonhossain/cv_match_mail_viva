@@ -8,14 +8,13 @@ import smtplib
 import re
 from dotenv import load_dotenv
 
-import env
-
 load_dotenv()
 
 class EmailSender:
     SMTP_SERVER = os.getenv("SMTP_SERVER")
-    USERNAME = os.getenv("USERNAME")
+    SMTP_USERNAME = os.getenv("SMTP_USERNAME")
     PASSWORD = os.getenv("PASSWORD")
+    print(SMTP_SERVER, SMTP_USERNAME, PASSWORD)
  
     def __init__(self, subject: str, email_col: str, email_message: str, file: UploadFile):
         self.subject = subject
@@ -23,6 +22,7 @@ class EmailSender:
         self.email_message = email_message
         self.file = file
         self.df = None
+        
 
     async def read_file(self):
         contents = await self.file.read()
@@ -46,12 +46,13 @@ class EmailSender:
     def send_email(self, to_address: str, body: str):
         try:
             with smtplib.SMTP_SSL(self.SMTP_SERVER, 465) as server:
-                server.login(self.USERNAME, self.PASSWORD)
+                server.login(self.SMTP_USERNAME, self.PASSWORD)
                 msg = MIMEText(body)
                 msg["Subject"] = self.subject
-                msg["From"] = self.USERNAME
+                msg["From"] = self.SMTP_USERNAME
                 msg["To"] = to_address
-                server.sendmail(self.USERNAME, to_address, msg.as_string())
+                server.sendmail(self.SMTP_USERNAME, to_address, msg.as_string())
+                
                 print(f"Email sent to {to_address}")
         except Exception as e:
             print(f"Failed to send email to {to_address}: {e}")
