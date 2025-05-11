@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, File, Form, UploadFile
 import os
 from fastapi.responses import JSONResponse
-from EmailSender import EmailSenderLogic
+from EmailSender import EmailSender, EmailSenderLogic
 from resume_extractor import ResumeExtractor
 from model import Generate_questions, Model, ModelHR
 from files_uploader import save_candidate_files, save_hr_files
@@ -36,8 +36,8 @@ async def process_HR_resume_generate_question():
     return Generate_questions.generate_questions()
 
 @api.post("/extract_resume_info/")
-async def get_resume_info(fileNames: List[str]):
-    result = ResumeExtractor.extract_resume_info(fileNames)
+async def get_resume_info():
+    result = ResumeExtractor.extract_resume_info()
     return result
 
 @api.post("/get_excel_columns/")
@@ -49,6 +49,13 @@ async def send_emails(
     subject: str = Form(...),
     email_col: str = Form(...),
     email_message: str = Form(...),
-    file: UploadFile = File(...)
+    file: UploadFile = Form(...)
 ):
-    return await EmailSenderLogic.send_emails(subject, email_col, email_message, file)
+    try:
+        sender = EmailSender(subject, email_col, email_message, file)
+        await sender.send_bulk_emails()
+        return {"message": "Emails sent successfully!"}
+    except ValueError as ve:
+        return JSONResponse(status_code=400, content={"error": str(ve)})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": f"An error occurred: {str(e)}"})
